@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  FLASK_APP: app.py
+  FLASK_ENV: production
+  MYSQL_HOST: mysql
+  MYSQL_USER: root
+  MYSQL_DATABASE: devops_exam
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-script
+data:
+  init.sql: "./db/init.sql"  
