@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/mysql
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: init-script-volume
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /docker-entrypoint-initdb.d/init.sql
+    type: DirectoryOrCreate    
