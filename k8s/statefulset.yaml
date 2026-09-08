@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysqldb
+          image: mysql:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mysqlport
+              containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MYSQL_DATABASE
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -u root -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 10
+          volumeMounts:
+            - name: mysql-pv
+              mountPath: /var/lib/mysql
+            - name: init-script-volume
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql  
+              readOnly: true
+      volumes:
+        - name: mysql-pv
+          persistentVolumeClaim:
+            claimName: mysql-data
+        - name: init-script-volume
+          configMap:
+            name: db-init-script   
