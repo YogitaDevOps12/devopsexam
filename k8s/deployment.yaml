@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+        - name: flask
+          image: yg7821/devopsexamapp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: port
+              containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: app-config
+          env:
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: port
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: port
+            initialDelaySeconds: 15
+            periodSeconds: 20
