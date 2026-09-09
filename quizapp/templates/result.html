@@ -1,0 +1,278 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <title>CloudDevOpsHub App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1d4ed8;           /* Deep Blue */
+            --primary-dark: #1e3a8a;      /* Navy */
+            --primary-light: #3b82f6;     /* Bright Blue */
+            --text: #0f172a;              /* Dark Slate */
+            --text-light: #64748b;        /* Muted Gray-Blue */
+            --bg: #f8fafc;                /* Soft Blue-White */
+            --card-bg: #ffffff;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        .result-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.15);
+            text-align: center;
+            flex: 1;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .result-message {
+            font-size: 1.1rem;
+            margin: 1.5rem 0;
+            color: var(--text-light);
+        }
+
+        .next-btn {
+            display: inline-block;
+            padding: 1rem 2.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+        }
+
+        .next-btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+        }
+
+        .next-btn i {
+            margin-left: 0.6rem;
+            transition: transform 0.3s ease;
+        }
+
+        .next-btn:hover i {
+            transform: translateX(5px);
+        }
+
+        .score-box {
+            background: #f1f5f9;
+            border-radius: 14px;
+            padding: 2.5rem 2rem;
+            margin-top: 2rem;
+            border: 1px solid #dbeafe;
+            display: none;
+            animation: fadeInUp 0.8s ease both;
+            box-shadow: 0 6px 14px rgba(29, 78, 216, 0.08);
+        }
+
+        .emoji-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: bounce 1s infinite alternate;
+        }
+
+        .progress-ring {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s ease-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--primary-dark);
+        }
+
+        .score-pass {
+            color: var(--success);
+        }
+
+        .score-fail {
+            color: var(--danger);
+        }
+
+        .score-message {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            animation: pulse 2s infinite;
+        }
+
+        .result-footer {
+            margin-top: 2.5rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .result-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .result-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .developer-credit {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .developer-credit a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .developer-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h1 class="result-title">Your Result</h1>
+
+        <div class="result-message">
+            <p>Thank you for completing the DevOps Certification Practice Mock Test.</p>
+        </div>
+
+        <button class="next-btn" onclick="showScore(); return false;">
+            View Your Score <i class="fas fa-chevron-down"></i>
+        </button>
+
+        <div id="score-box" class="score-box">
+            {% if score >= 12 %}
+                <div class="emoji-icon">🎉</div>
+            {% elif score >= 9 %}
+                <div class="emoji-icon">😊</div>
+            {% else %}
+                <div class="emoji-icon">😔</div>
+            {% endif %}
+
+            <svg class="progress-ring" viewBox="0 0 100 100">
+                <circle class="progress-ring__circle" stroke="#e2e8f0" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="progress-ring__circle" 
+                        stroke="{{ 'var(--success)' if score >= 9 else 'var(--danger)' }}" 
+                        stroke-width="8" 
+                        stroke-dasharray="{{ (score/15)*251.2 }} 251.2" 
+                        fill="transparent" 
+                        r="40" cx="50" cy="50"/>
+            </svg>
+
+            <div class="score-display {{ 'score-pass' if score >= 9 else 'score-fail' }}">
+                <i class="fas {{ 'fa-trophy' if score >= 12 else 'fa-medal' if score >= 9 else 'fa-heart-broken' }}"></i>
+                {{ score }} / 15
+            </div>
+
+            <div class="score-message">
+                {% if score >= 12 %}
+                    <p><i class="fas fa-check-circle" style="color: var(--success);"></i> Outstanding! You're a DevOps expert!</p>
+                {% elif score >= 9 %}
+                    <p><i class="fas fa-check" style="color: var(--success);"></i> Congratulations! You passed the exam!</p>
+                {% else %}
+                    <p><i class="fas fa-exclamation-circle" style="color: var(--danger);"></i> Keep practicing!</p>
+                {% endif %}
+            </div>
+
+            <p>You scored <strong>{{ (score/15)*100|round(1) }}%</strong> on the exam.</p>
+        </div>
+
+        <div class="result-footer">
+            <p>For detailed answers, please contact the exam administrator.</p>
+            <p><a href="/"><i class="fas fa-home"></i> Return to Home</a></p>
+        </div>
+    </div>
+
+    <div class="developer-credit">
+        Developed by <a href="#">CloudDevOpsHub</a>
+    </div>
+
+    <script>
+        function showScore() {
+            const scoreBox = document.getElementById('score-box');
+            const button = document.querySelector('.next-btn');
+            scoreBox.style.display = 'block';
+            button.style.opacity = '0';
+            button.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                button.style.display = 'none';
+                scoreBox.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        }
+
+        if (window.location.hash === '#score') {
+            showScore();
+        }
+    </script>
+</body>
+</html>
