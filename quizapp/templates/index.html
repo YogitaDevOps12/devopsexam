@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CloudDevOpsHub App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-dark: #1e40af;
+        --primary-light: #93c5fd;
+        --accent: #60a5fa;
+        --text: #0f172a; /* Dark Blue */
+        --text-light: #1e3a8a; /* Medium Blue for subtext */
+        --bg: #f0f6ff;
+        --card-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    .container {
+        text-align: center;
+        width: 100%;
+        padding: 2rem;
+        animation: fadeIn 0.8s ease-out;
+        position: relative;
+    }
+
+    .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .shape {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.1;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        filter: blur(60px);
+    }
+
+    .shape-1 { width: 180px; height: 180px; top: -60px; right: -60px; animation: float 7s ease-in-out infinite; }
+    .shape-2 { width: 120px; height: 120px; bottom: 20%; left: -40px; animation: float 6s ease-in-out infinite 2s; }
+    .shape-3 { width: 80px; height: 80px; top: 30%; left: 25%; animation: float 5s ease-in-out infinite 1s; }
+
+    .exam-badge {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        padding: 0.6rem 1.4rem;
+        border-radius: 50px;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 10px rgba(30, 64, 175, 0.3);
+        animation: float 4s ease-in-out infinite;
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.8rem;
+    }
+
+    .header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .exam-features {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .feature {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        padding: 1rem 1.4rem;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 0.95rem;
+        color: var(--text);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .feature:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        background: white;
+    }
+
+    .feature i {
+        color: var(--primary-dark);
+        font-size: 1.2rem;
+    }
+
+    form {
+        background: var(--card-bg);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 2.8rem 2rem;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(30, 64, 175, 0.15);
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+        transition: all 0.4s ease;
+    }
+
+    form:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(30, 64, 175, 0.25);
+    }
+
+    form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary-dark), var(--accent), var(--primary));
+        background-size: 200% 200%;
+        animation: gradientFlow 3s linear infinite;
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        margin-bottom: 0.6rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 1.8rem;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-dark);
+        transition: color 0.3s ease;
+    }
+
+    input, select {
+        padding: 0.9rem 1rem 0.9rem 45px;
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        color: var(--text);
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        background-color: white;
+    }
+
+    input:focus + i, select:focus + i {
+        color: var(--primary);
+    }
+
+    .next-btn {
+        margin-top: 1.5rem;
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .next-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .next-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 20%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 80%
+        );
+        transform: rotate(30deg);
+        transition: all 0.7s ease;
+    }
+
+    .next-btn:hover::after {
+        left: 100%;
+    }
+
+    .footer {
+        margin-top: 3rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .footer i {
+        color: var(--primary-dark);
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem; }
+        .header p { font-size: 1rem; }
+        form { padding: 2rem 1.2rem; }
+        .exam-features { flex-direction: column; align-items: center; }
+    }
+</style>
+
+
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="exam-badge">
+                <i class="fas fa-shield-alt"></i> CloudDevOpsHub Mock Exam
+            </div>
+            <h1>DevOps Certification Practice Mock Test</h1>
+            <p>Prove your expertise with hands-on DevOps learning</p>
+            
+            <div class="exam-features">
+                <div class="feature">
+                    <i class="fas fa-clock"></i>
+                    <span>Timed Assessment</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Real-world Scenarios</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Performance Analytics</span>
+                </div>
+            </div>
+        </div>
+        
+        <form action="/start" method="POST">
+            <div class="input-group">
+                <label for="name">Full Name</label>
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" name="name" placeholder="vikas form cloudDevOpsHub" required>
+            </div>
+
+            <div class="input-group">
+                <label for="gender">Gender</label>
+                <i class="fas fa-venus-mars"></i>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <button type="submit" class="next-btn">
+                <i class="fas fa-play"></i> Start Exam
+            </button>
+        </form>
+
+        <div class="footer">
+            <i class="fas fa-code-branch"></i>
+            <span>Developed by CloudDevOpsHub</span>
+        </div>
+    </div>
+</body>
+</html>
