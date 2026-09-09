@@ -36,8 +36,13 @@ spec:
             - configMapRef:
                 name: app-config
           env:
-            - name: MYSQL_PASSWORD
-              valueFrom:
+           - name: FLASK_SECRET_KEY
+             valueFrom:
+               secretKeyRef:
+                 name: flask-secret
+                 key: FLASK_SECRET_KEY
+             name: MYSQL_PASSWORD
+             valueFrom:
                 secretKeyRef:
                   name: mysql-secret
                   key: MYSQL_PASSWORD
