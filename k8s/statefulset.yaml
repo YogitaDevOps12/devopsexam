@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
+  labels:
+    app: mysql
 spec:
   serviceName: mysql
   replicas: 1
@@ -63,4 +65,4 @@ spec:
             claimName: mysql-data
         - name: init-script-volume
           configMap:
-            name: db-init-script   
+            name: db-init-script    
