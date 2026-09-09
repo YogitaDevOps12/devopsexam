@@ -12,4 +12,3 @@ spec:
   hostPath:
     path: /mnt/data/mysql
     type: DirectoryOrCreate
-
