@@ -318,7 +318,10 @@
                             </label>
                         {% endfor %}
                     </div>
-                    <input type="hidden" name="correct_answer_{{ q['index'] }}" value="{{ q['answer'] }}">
+                    <!-- The correct-answer hidden field that used to be here has been
+                         removed. It was never read by /submit (scoring uses the
+                         server-side session, not this field), and it was exposing
+                         the answer key to anyone who viewed page source. -->
                 </div>
             {% endfor %}
 
