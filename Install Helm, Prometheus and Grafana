@@ -26,7 +26,7 @@ Command to get the admin username password for Grafana:
 kubectl --namespace monitor get secrets kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
 
 To access Grafana on port 3000:
-kubectl expose deployment kube-prometheus-stack-grafana --port=3000 --target-port=3000 --name=grafana --type=LoadBalancer -n devsecops --dry-run=client -o yaml > grafana.yaml
+kubectl expose deployment kube-prometheus-stack-grafana --port=3000 --target-port=3000 --name=grafana --type=LoadBalancer -n devsecops
 
 kubectl get all -n devsecops
 
