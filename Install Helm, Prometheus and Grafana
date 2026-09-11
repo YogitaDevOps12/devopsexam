@@ -17,18 +17,36 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 helm version
 
+The below stage in the Jenkinsfile for the Pipeline takes care of the initial setup and installation of Prometheus and Grafana:
 
-Prometheus and Grafana installation using Helm:
-kubectl create namespace devsecops
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --namespace devsecops
+stage('Deploy Monitoring Stack') {
+            steps {
+               withCredentials([[
+                   $class: 'AmazonWebServicesCredentialsBinding',
+                   credentialsId: "${AWS_CREDENTIALS_ID}"
+               ]]) {
+                   sh """
+                       aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER_NAME}
+
+                       helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                       helm repo update
+
+                       helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+                       --namespace devsecops --create-namespace
+
+                       kubectl apply -f k8s/grafana-service.yaml
+                  """
+               }
+           }
+       }		
+
+
+
+
+
 
 Command to get the admin username password for Grafana:
 kubectl --namespace devsecops get secrets kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
-
-To access Grafana on port 3000:
-kubectl expose deployment kube-prometheus-stack-grafana --port=3000 --target-port=3000 --name=grafana --type=LoadBalancer -n devsecops
 
 kubectl get all -n devsecops
 
